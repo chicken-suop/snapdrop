@@ -41,6 +41,9 @@ class ServerConnection {
             case 'ping':
                 this.send({ type: 'pong' });
                 break;
+            case 'display-name':
+                Events.fire('display-name', msg);
+                break;
             default:
                 console.error('WS: unkown message type', msg);
         }
@@ -55,7 +58,7 @@ class ServerConnection {
         // hack to detect if deployment or development environment
         const protocol = location.protocol.startsWith('https') ? 'wss' : 'ws';
         const webrtc = window.isRtcSupported ? '/webrtc' : '/fallback';
-        const url = protocol + '://' + location.host + '/server' + webrtc;
+        const url = protocol + '://' + location.host + location.pathname + 'server' + webrtc;
         return url;
     }
 
@@ -183,6 +186,8 @@ class Peer {
     }
 
     _onChunkReceived(chunk) {
+        if(!chunk.byteLength) return;
+        
         this._digester.unchunk(chunk);
         const progress = this._digester.progress;
         this._onDownloadProgress(progress);
@@ -249,8 +254,10 @@ class RTCPeer extends Peer {
     }
 
     _openChannel() {
-        const channel = this._conn.createDataChannel('data-channel', { reliable: true });
-        channel.binaryType = 'arraybuffer';
+        const channel = this._conn.createDataChannel('data-channel', { 
+            ordered: true,
+            reliable: true // Obsolete. See https://developer.mozilla.org/en-US/docs/Web/API/RTCDataChannel/reliable
+        });
         channel.onopen = e => this._onChannelOpened(e);
         this._conn.createOffer().then(d => this._onDescription(d)).catch(e => this._onError(e));
     }
@@ -287,6 +294,7 @@ class RTCPeer extends Peer {
     _onChannelOpened(event) {
         console.log('RTC: channel opened with', this._peerId);
         const channel = event.channel || event.target;
+        channel.binaryType = 'arraybuffer';
         channel.onmessage = e => this._onMessage(e.data);
         channel.onclose = e => this._onChannelClosed();
         this._channel = channel;
@@ -440,7 +448,8 @@ class FileChunker {
         this._offset += chunk.byteLength;
         this._partitionSize += chunk.byteLength;
         this._onChunk(chunk);
-        if (this._isPartitionEnd() || this.isFileEnd()) {
+        if (this.isFileEnd()) return;
+        if (this._isPartitionEnd()) {
             this._onPartitionEnd(this._offset);
             return;
         }
@@ -457,7 +466,7 @@ class FileChunker {
     }
 
     isFileEnd() {
-        return this._offset > this._file.size;
+        return this._offset >= this._file.size;
     }
 
     get progress() {
@@ -481,6 +490,8 @@ class FileDigester {
         this._bytesReceived += chunk.byteLength || chunk.size;
         const totalChunks = this._buffer.length;
         this.progress = this._bytesReceived / this._size;
+        if (isNaN(this.progress)) this.progress = 1
+
         if (this._bytesReceived < this._size) return;
         // we are done
         let blob = new Blob(this._buffer, { type: this._mime });
@@ -502,15 +513,16 @@ class Events {
     static on(type, callback) {
         return window.addEventListener(type, callback, false);
     }
+
+    static off(type, callback) {
+        return window.removeEventListener(type, callback, false);
+    }
 }
 
 
 RTCPeer.config = {
+    'sdpSemantics': 'unified-plan',
     'iceServers': [{
         urls: 'stun:stun.l.google.com:19302'
-    }, {
-        urls: 'turn:192.158.29.39:3478?transport=tcp',
-        credential: 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',
-        username: '28224511:1379330808'
     }]
 }

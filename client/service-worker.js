@@ -1,11 +1,14 @@
-var CACHE_NAME = 'snapdrop-cache-v1.043';
+var CACHE_NAME = 'snapdrop-cache-v2';
 var urlsToCache = [
-  '/',
-  '/styles.css',
-  '/scripts/network.js',
-  '/scripts/ui.js',
-  '/sounds/blop.mp3',
-  '/images/favicon-96x96.png'
+  'index.html',
+  './',
+  'styles.css',
+  'scripts/network.js',
+  'scripts/ui.js',
+  'scripts/clipboard.js',
+  'scripts/theme.js',
+  'sounds/blop.mp3',
+  'images/favicon-96x96.png'
 ];
 
 self.addEventListener('install', function(event) {
@@ -31,5 +34,24 @@ self.addEventListener('fetch', function(event) {
         return fetch(event.request);
       }
     )
+  );
+});
+
+
+self.addEventListener('activate', function(event) {
+  console.log('Updating Service Worker...')
+  event.waitUntil(
+    caches.keys().then(function(cacheNames) {
+      return Promise.all(
+        cacheNames.filter(function(cacheName) {
+          // Return true if you want to remove this cache,
+          // but remember that caches are shared across
+          // the whole origin
+          return true
+        }).map(function(cacheName) {
+          return caches.delete(cacheName);
+        })
+      );
+    })
   );
 });

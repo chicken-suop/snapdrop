@@ -1,66 +1,34 @@
 # Snapdrop 
 
-[Snapdrop](https://snapdrop.net): local file sharing in your browser - inspired by Apple's Airdrop.
-
-#### Snapdrop (Version 2) is built with the following awesome technologies:
-* Vanilla HTML5 / ES6 / CSS3  
-* Progressive Web App
-* [WebRTC](http://webrtc.org/)
-* [WebSockets](http://www.websocket.org/) fallback (iDevices don't support WebRTC)
-* [NodeJS](https://nodejs.org/en/)
-* [Material Design](https://material.google.com/)
+[Snapdrop](https://snapdrop.net): local file sharing in your browser. Inspired by Apple's Airdrop.
 
 
-### Frequently Asked Questions
-
-### Instructions
-* [Video Instructions](https://www.youtube.com/watch?v=4XN02GkcHUM) (Big thanks to [TheiTeckHq](https://www.youtube.com/channel/UC_DUzWMb8gZZnAbISQjmAfQ))
-* [idownloadblog](http://www.idownloadblog.com/2015/12/29/snapdrop/)
-* [thenextweb](http://thenextweb.com/insider/2015/12/27/snapdrop-is-a-handy-web-based-replacement-for-apples-fiddly-airdrop-file-transfer-tool/)
-* [winboard](http://www.winboard.org/artikel-ratgeber/6253-dateien-vom-desktop-pc-mit-anderen-plattformen-teilen-mit-snapdrop.html)
-* [免費資源網路社群](https://free.com.tw/snapdrop/)
-
-##### What about the connection? Is it a P2P-connection directly from device to device or is there any third-party-server?
-It uses a P2P connection if WebRTC is supported by the browser. (WebRTC needs a Signaling Server, but it is only used to establish a connection and is not involved in the file transfer).
-
-If WebRTC isn’t supported (Safari, IE) it uses a Web Sockets fallback for the file transfer. The server connects the clients with each other.  
-
-##### What about privacy? Will files be saved on third-party-servers?
-None of your files are ever saved on any server. 
-Snapdrop doesn't even use a database. If you are curious have a look [at the Server](https://github.com/RobinLinus/snapdrop/blob/master/server/).
-
-##### Is SnapDrop a fork of ShareDrop?
-No. ShareDrop is built with Ember. Snapdrop is built with vanilla ES6. 
-I wanted to play around with Progressive Web Apps and then I got the idea of a local file sharing app. By doing research on this idea I found and analysed ShareDrop. I liked it and thought about how to improve it.
-ShareDrop uses WebRTC only and isn't compatible with Safari browsers. Snapdrop uses a Websocket fallback and some hacks to make Snapdrop work due to the download restrictions on iDevices. 
+#### Snapdrop is built with the following awesome technologies:
+* Vanilla HTML5 / ES6 / CSS3 frontend
+* [WebRTC](http://webrtc.org/) / [WebSockets](http://www.websocket.org/)
+* [NodeJS](https://nodejs.org/en/) backend
+* [Progressive Web App](https://wikipedia.org/wiki/Progressive_Web_App)
 
 
-### Snapdrop is awesome! How can I support it? 
-* [File bugs, give feedback, submit suggestions](https://github.com/RobinLinus/snapdrop/issues)
-* Share Snapdrop on your social media.
-* [Buy me a cup of coffee](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=R9C5E42UYEQCN)
-* Fix bugs and make a pull request. 
-* Do security analysis and suggestions
+Have any questions? Read our [FAQ](/docs/faq.md).
 
-## Local Development
-[Install docker with docker-compose.](https://docs.docker.com/compose/install/)
+You can [host your own instance with Docker](/docs/local-dev.md).
 
-```
-    git clone git@github.com:RobinLinus/snapdrop.git
-    cd snapdrop
-    docker-compose up
-```
 
-Now point your browser to http://localhost:8080.
-    
-## Deployment Notes
-The client expects the server at http(s)://your.domain/server.
+## Support the Snapdrop Community
+Snapdrop is free. Still, we have to pay for the server. If you want to contribute, please use PayPal:
 
-When serving the node server behind a proxy the `X-Forwarded-For` header has to be set by the proxy. Otherwise all clients that are served by the proxy will be mutually visible.
+[<img src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif">](https://www.paypal.com/donate/?hosted_button_id=MG8GV7YCYT352)
 
-By default the server listens on port 3000.
+or Bitcoin:
 
-For an nginx configuration example see `nginx/default.conf`.
+[<img src="https://coins.github.io/thx/logo-color-large-pill-320px.png" alt="CoinThx" width="200"/>](https://coins.github.io/thx/#1K9zQ8f4iTyhKyHWmiDKt21cYX2QSDckWB?label=Snapdrop&message=Thanks!%20Your%20contribution%20helps%20to%20keep%20Snapdrop%20free%20for%20everybody!) 
 
-## Licences
-* Thanks to [Mark DiAngelo]() for the [Blop Sound](http://soundbible.com/2067-Blop.html)
+[Bitcoin Lighting](https://tippin.me/@robin_linus)
+
+Alternatively, you can become a [Github Sponsor](https://github.com/sponsors/RobinLinus).
+
+Thanks a lot for supporting free and open software!
+
+
+ 
